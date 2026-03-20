@@ -1,24 +1,29 @@
-# 1. Create a project folder and go inside
-mkdir aws-project-1
-cd aws-project-1
+# AWS Self-Healing Web Server 🛡️🌐
 
-# 2. Create your files (Copy-paste your script and the README I gave you)
-nano monitor_web.sh
-nano README.md
+A project demonstrating automated service recovery (High Availability) using **AWS EC2**, **Bash scripting**, and **Linux Cron jobs**.
 
-# 3. Initialize the Git "brain" in this folder
-git init
+## 🎯 The Goal
+To build a resilient web server that monitors its own health and automatically restarts services in the event of a failure, reducing downtime without human intervention.
 
-# 4. Add your files to the staging area
-git add .
+## 🛠️ Technology Stack
+* **Cloud:** AWS (EC2)
+* **OS:** Amazon Linux 2023
+* **Web Server:** Apache (httpd)
+* **Automation:** Bash Scripting & Crontab
+* **Logging:** Custom system logs for audit trails
 
-# 5. Commit the changes
-git commit -m "First commit: Added self-healing script and documentation"
+## 🚀 Key Features
+* **Service Monitoring:** A Bash script checks the status of the `httpd` process every 60 seconds.
+* **Automated Recovery:** If the service is down, the script triggers an automatic restart.
+* **Event Logging:** Every check and restart action is timestamped and logged to `/home/ec2-user/web_monitor.log`.
+* **Infrastructure as Code (Logic):** Utilizes `systemctl` and `cronie` for process management.
 
-# 6. Link your local folder to GitHub
-# (Copy the URL from the GitHub page you just created)
-git remote add origin https://github.com/YOUR_USERNAME/aws-self-healing-server.git
-
-# 7. Push your code to the internet
-git branch -M main
-git push -u origin main
+## 📝 The "Self-Healing" Script
+```bash
+# Example logic used in the project
+if systemctl is-active --quiet httpd; then
+    echo "$(date): Service is running." >> web_monitor.log
+else
+    echo "$(date): Service DOWN. Restarting..." >> web_monitor.log
+    sudo systemctl start httpd
+fi
